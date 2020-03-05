@@ -67,6 +67,7 @@ def tinyMazeSearch(problem):
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
     sequence of moves will be incorrect, so only use this for tinyMaze.
     """
+    print('########################', str(problem))
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
@@ -86,8 +87,40 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #"*** YOUR CODE HERE ***"
+    #print("Start:", problem.getStartState())
+    #print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    #print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    #util.raiseNotDefined()
+
+    stack = util.Stack()
+    stack.push([(problem.getStartState(), "", 0)])
+    visited_states = []
+    
+    while not stack.isEmpty():
+        path = stack.pop()
+        current_state = path[-1][0]
+
+        if problem.isGoalState(current_state):
+            path_to_goal = []
+            for x in path:
+                if len(x[1]) != 0:
+                    path_to_goal.append(x[1]) 
+            print('path_to_goal', path_to_goal)
+            return path_to_goal
+        
+        else:
+            if current_state not in visited_states:
+                visited_states.append(current_state) 
+
+                for successor in problem.getSuccessors(current_state):
+                    if successor[0] not in visited_states:
+                        successorPath = path[:]
+                        successorPath.append(successor)
+                        stack.push(successorPath)
+    return problem, stack
+
+    #return False
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
