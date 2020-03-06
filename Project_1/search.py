@@ -73,6 +73,8 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+#def graphNav()
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -125,12 +127,56 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
+    queue = util.Queue()
+    queue.push([(problem.getStartState(), "", 0)])
+    visited_states = []
+    
+    while not queue.isEmpty():
+        path = queue.pop()
+        current_state = path[-1][0]
+
+        if problem.isGoalState(current_state):
+            path_to_goal = []
+            for x in path:
+                if len(x[1]) != 0:
+                    path_to_goal.append(x[1]) 
+            print('path_to_goal', path_to_goal)
+            return path_to_goal
+        
+        else:
+            if current_state not in visited_states:
+                visited_states.append(current_state) 
+
+                for successor in problem.getSuccessors(current_state):
+                    if successor[0] not in visited_states:
+                        successorPath = path[:]
+                        successorPath.append(successor)
+                        queue.push(successorPath)
+    return problem, queue
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
+    start = problem.getStartState()
+    visited_states = []
+    states = util.PriorityQueue()
+    states.push((start, []) ,0)
+    while not states.isEmpty():
+        state, actions_taken = states.pop()
+        if problem.isGoalState(state):
+            return actions_taken
+        if state not in visited_states:
+            successors = problem.getSuccessors(state)
+            for succ in successors:
+                coordinates = succ[0]
+                if coordinates not in visited_states:
+                    directions = succ[1]
+                    newCost = actions_taken + [directions]
+                    states.push((coordinates, actions_taken + [directions]), problem.getCostOfActions(newCost))
+        visited_states.append(state)
+    return actions_taken
 
 def nullHeuristic(state, problem=None):
     """
@@ -142,6 +188,28 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    #util.raiseNotDefined()
+    "Search the node that has the lowest combined cost and heuristic first."
+    start = problem.getStartState()
+    exploredState = []
+    states = util.PriorityQueue()
+    states.push((start, []), nullHeuristic(start, problem))
+    nCost = 0
+    while not states.isEmpty():
+        state, actions = states.pop()
+        if problem.isGoalState(state):
+            return actions
+        if state not in exploredState:
+            successors = problem.getSuccessors(state)
+            for succ in successors:
+                coordinates = succ[0]
+                if coordinates not in exploredState:
+                    directions = succ[1]
+                    nActions = actions + [directions]
+                    nCost = problem.getCostOfActions(nActions) + heuristic(coordinates, problem)
+                    states.push((coordinates, actions + [directions]), nCost)
+        exploredState.append(state)
+    return actions
     util.raiseNotDefined()
 
 
