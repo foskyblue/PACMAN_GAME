@@ -73,7 +73,50 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-#def graphNav()
+########################################################################################################################
+#   With suggests in the documents and also what we studied for the algorithms of several search functions, we decided
+# to extract a main method for all other search methods. For the better reuse and understandability.
+#   Method description: With the format information of problem.getStartState() == (5,5),
+# problem.isGoalState(problem.getStartState()) == False, and problem.getSuccessors(problem.getStartState()) ==
+# [((5, 4), 'South', 1), ((4, 5), 'West', 1)]
+# path_to_goal == ['West', 'West', 'West', 'West', 'South', 'South', 'East', 'South', 'South', 'West']
+#   We push the general search as the format below and make a list to make sure each coordinate is visited or not.
+#   Make a loop with condition of if the algorithm is not empty, then keep running
+#   pop()(remove) coordinate and move to the next, and set the current_state
+#   If goal state == True for current state, run a roop in the path finding, if x[1] data not empty,  add x[1] to
+# path_to_goal.
+# Else will check whether the current_state is visited, if not, add to visited.
+# Later on, run the roop for successor states for current_state, and add each successtors for current state.
+# Last step, push the succesor paths to the algorithm.
+########################################################################################################################
+def graphFindPath(problem, algorithm):
+
+    algorithm.push([(problem.getStartState(), "", 0)])
+    visited_states = []
+
+    while not algorithm.isEmpty():
+        path = algorithm.pop()
+        current_state = path[-1][0]
+
+        if problem.isGoalState(current_state):
+            path_to_goal = []
+            for x in path:
+                if len(x[1]) != 0:
+                    path_to_goal.append(x[1])
+            print('path_to_goal', path_to_goal)
+            return path_to_goal
+
+        else:
+            if current_state not in visited_states:
+                visited_states.append(current_state)
+
+                for successor in problem.getSuccessors(current_state):
+                    if successor[0] not in visited_states:
+                        successorPath = path[:]
+                        successorPath.append(successor)
+                        algorithm.push(successorPath)
+
+    return (problem, algorithm)
 
 def depthFirstSearch(problem):
     """
@@ -89,94 +132,27 @@ def depthFirstSearch(problem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    #"*** YOUR CODE HERE ***"
-    #print("Start:", problem.getStartState())
-    #print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    #print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    #util.raiseNotDefined()
-
+    "*** YOUR CODE HERE ***"
     stack = util.Stack()
-    stack.push([(problem.getStartState(), "", 0)])
-    visited_states = []
-    
-    while not stack.isEmpty():
-        path = stack.pop()
-        current_state = path[-1][0]
-
-        if problem.isGoalState(current_state):
-            path_to_goal = []
-            for x in path:
-                if len(x[1]) != 0:
-                    path_to_goal.append(x[1]) 
-            print('path_to_goal', path_to_goal)
-            return path_to_goal
-        
-        else:
-            if current_state not in visited_states:
-                visited_states.append(current_state) 
-
-                for successor in problem.getSuccessors(current_state):
-                    if successor[0] not in visited_states:
-                        successorPath = path[:]
-                        successorPath.append(successor)
-                        stack.push(successorPath)
-    return problem, stack
-
-    #return False
+    return graphFindPath(problem, stack)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
     queue = util.Queue()
-    queue.push([(problem.getStartState(), "", 0)])
-    visited_states = []
-    
-    while not queue.isEmpty():
-        path = queue.pop()
-        current_state = path[-1][0]
 
-        if problem.isGoalState(current_state):
-            path_to_goal = []
-            for x in path:
-                if len(x[1]) != 0:
-                    path_to_goal.append(x[1]) 
-            print('path_to_goal', path_to_goal)
-            return path_to_goal
-        
-        else:
-            if current_state not in visited_states:
-                visited_states.append(current_state) 
-
-                for successor in problem.getSuccessors(current_state):
-                    if successor[0] not in visited_states:
-                        successorPath = path[:]
-                        successorPath.append(successor)
-                        queue.push(successorPath)
-    return problem, queue
+    return graphFindPath(problem, queue)
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
-    start = problem.getStartState()
-    visited_states = []
-    states = util.PriorityQueue()
-    states.push((start, []) ,0)
-    while not states.isEmpty():
-        state, actions_taken = states.pop()
-        if problem.isGoalState(state):
-            return actions_taken
-        if state not in visited_states:
-            successors = problem.getSuccessors(state)
-            for succ in successors:
-                coordinates = succ[0]
-                if coordinates not in visited_states:
-                    directions = succ[1]
-                    newCost = actions_taken + [directions]
-                    states.push((coordinates, actions_taken + [directions]), problem.getCostOfActions(newCost))
-        visited_states.append(state)
-    return actions_taken
+
+    costFunc = lambda path: problem.getCostOfActions([x[1] for x in path][1:])
+    PrioQ = util.PriorityQueueWithFunction(costFunc)
+    return graphFindPath(problem,PrioQ)
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -184,34 +160,16 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
-
+# the main algorithm of a search is based on uniformCostSearch + heuristic
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
     "Search the node that has the lowest combined cost and heuristic first."
-    start = problem.getStartState()
-    exploredState = []
-    states = util.PriorityQueue()
-    states.push((start, []), nullHeuristic(start, problem))
-    nCost = 0
-    while not states.isEmpty():
-        state, actions = states.pop()
-        if problem.isGoalState(state):
-            return actions
-        if state not in exploredState:
-            successors = problem.getSuccessors(state)
-            for succ in successors:
-                coordinates = succ[0]
-                if coordinates not in exploredState:
-                    directions = succ[1]
-                    nActions = actions + [directions]
-                    nCost = problem.getCostOfActions(nActions) + heuristic(coordinates, problem)
-                    states.push((coordinates, actions + [directions]), nCost)
-        exploredState.append(state)
-    return actions
-    util.raiseNotDefined()
+    costFunc = lambda path: problem.getCostOfActions([x[1] for x in path][1:]) + heuristic(path[-1][0], problem)
+    AS = util.PriorityQueueWithFunction(costFunc)
 
+    return graphFindPath(problem,AS)
 
 # Abbreviations
 bfs = breadthFirstSearch
