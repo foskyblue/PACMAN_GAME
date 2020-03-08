@@ -118,6 +118,10 @@ def graphFindPath(problem, algorithm):
 
     return (problem, algorithm)
 
+
+# As we studied the util.py, we find that several methods are related to the search algorithms.
+# We choose the Stack function which using the last-in-first-out logic for DFS.
+# Then we provide the stack algorithm and return to the graphFindPath method for finding the possible path.
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -136,6 +140,9 @@ def depthFirstSearch(problem):
     stack = util.Stack()
     return graphFindPath(problem, stack)
 
+# As we studied the util.py, we find that several methods are related to the search algorithms.
+# We choose the Queue function which using the first-in-first-out logic for DFS.
+# Then we provide the stack algorithm and return to the graphFindPath method for finding the possible path.
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
@@ -144,14 +151,37 @@ def breadthFirstSearch(problem):
 
     return graphFindPath(problem, queue)
 
+
+# AS some parts of the condition of input changed from the graphFindPath, we decided to implement the function first
+# and refactor it later.
+# the difference from above is that PrioQ has a new value, count. It will count the priority and remove the least
+# prority target in the list. So, we name it as cost.
+# We add a new value that are same with path and call it as actions.
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
 
-    costFunc = lambda path: problem.getCostOfActions([x[1] for x in path][1:])
-    PrioQ = util.PriorityQueueWithFunction(costFunc)
-    return graphFindPath(problem,PrioQ)
+    visited_states = []
+    algorithm = util.PriorityQueue()
+    algorithm.push((problem.getStartState(), []), 0)
+    cost = 0
+    while not algorithm.isEmpty():
+        path,actions = algorithm.pop()
+
+        if problem.isGoalState(path):
+            return actions
+
+        else:
+            if path not in visited_states:
+                visited_states.append(path)
+
+                for successor in problem.getSuccessors(path):
+                    if successor[0] not in visited_states:
+                        directions = successor[1]
+                        cost = actions + [directions]
+                        algorithm.push((successor[0],cost),problem.getCostOfActions(cost))
+    return actions
 
 
 def nullHeuristic(state, problem=None):
@@ -160,17 +190,38 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
-# the main algorithm of a search is based on uniformCostSearch + heuristic
+# The main algorithm of a search is based on uniformCostSearch + heuristic
+# This search is similar to uniformCostSearch, the main structure is the same, adding nullHeuristic in the push
+# as the count part. Later on, adding nullCost below the original cost and push it(thisis just let the result push of
+# problem.getCostOfActions(cost) + heuristic(successor[0], problem))
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    #util.raiseNotDefined()
+
     "Search the node that has the lowest combined cost and heuristic first."
-    costFunc = lambda path: problem.getCostOfActions([x[1] for x in path][1:]) + heuristic(path[-1][0], problem)
-    AS = util.PriorityQueueWithFunction(costFunc)
+    visited_states = []
+    algorithm = util.PriorityQueue()
+    algorithm.push((problem.getStartState(), []), nullHeuristic(problem.getStartState(), problem))
+    cost = 0
+    while not algorithm.isEmpty():
+        path, actions = algorithm.pop()
 
-    return graphFindPath(problem,AS)
+        if problem.isGoalState(path):
+            return actions
 
+        else:
+            if path not in visited_states:
+                visited_states.append(path)
+
+                for successor in problem.getSuccessors(path):
+                    if successor[0] not in visited_states:
+                        directions = successor[1]
+                        cost = actions + [directions]
+                        nullCost = problem.getCostOfActions(cost) + heuristic(successor[0], problem)
+                        algorithm.push((successor[0], cost), nullCost)
+        visited_states.append(path)
+    return actions
+    #util.raiseNotDefined()
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
