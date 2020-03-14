@@ -72,6 +72,58 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+<<<<<<< Updated upstream
+=======
+########################################################################################################################
+#   With suggests in the documents and also what we studied for the algorithms of several search functions, we decided
+# to extract a main method for all other search methods. For the better reuse and understandability.
+#   Method description: With the format information of problem.getStartState() == (5,5),
+# problem.isGoalState(problem.getStartState()) == False, and problem.getSuccessors(problem.getStartState()) ==
+# [((5, 4), 'South', 1), ((4, 5), 'West', 1)]
+# path_to_goal == ['West', 'West', 'West', 'West', 'South', 'South', 'East', 'South', 'South', 'West']
+#   We push the general search as the format below and make a list to make sure each coordinate is visited or not.
+#   Make a loop with condition of if the algorithm is not empty, then keep running
+#   pop()(remove) coordinate and move to the next, and set the current_state
+#   If goal state == True for current state, run a roop in the path finding, if x[1] data not empty,  add x[1] to
+# path_to_goal.
+# Else will check whether the current_state is visited, if not, add to visited.
+# Later on, run the roop for successor states for current_state, and add each successtors for current state.
+# Last step, push the successor paths to the algorithm.
+########################################################################################################################
+def graphFindPath(problem, algorithm):
+
+    algorithm.push([(problem.getStartState(), "", 0)])
+    visited_states = []
+
+    while not algorithm.isEmpty():
+        path = algorithm.pop()
+        current_state = path[-1][0]
+
+        if problem.isGoalState(current_state):
+            path_to_goal = []
+            for x in path:
+                if len(x[1]) != 0:
+                    path_to_goal.append(x[1])
+            print('path_to_goal', path_to_goal)
+            return path_to_goal
+
+        else:
+            if current_state not in visited_states:
+                visited_states.append(current_state)
+
+                for successor in problem.getSuccessors(current_state):
+                    if successor[0] not in visited_states:
+                        successorPath = path[:]
+                        successorPath.append(successor)
+                        algorithm.push(successorPath)
+
+    return (problem, algorithm)
+
+
+# As we studied the util.py, we find that several methods are related to the search algorithms.
+# We choose the Stack function which using the last-in-first-out logic for DFS.
+# Then we provide the stack algorithm and return to the graphFindPath method for finding the possible path.
+>>>>>>> Stashed changes
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -112,6 +164,33 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     util.raiseNotDefined()
 
 
+<<<<<<< Updated upstream
+=======
+    "Search the node that has the lowest combined cost and heuristic first."
+    visited_states = []
+    algorithm = util.PriorityQueue()
+    algorithm.push((problem.getStartState(), []), nullHeuristic(problem.getStartState(), problem))
+    cost = 0
+    while not algorithm.isEmpty():
+        path, actions = algorithm.pop()
+
+        if problem.isGoalState(path):
+            return actions
+
+        else:
+            if path not in visited_states:
+                visited_states.append(path)
+
+                for successor in problem.getSuccessors(path):
+                    if successor[0] not in visited_states:
+                        directions = successor[1]
+                        cost = actions + [directions]
+                        ACost = problem.getCostOfActions(cost) + heuristic(successor[0], problem)
+                        algorithm.push((successor[0], cost), ACost)
+        visited_states.append(path)
+    return actions
+    #util.raiseNotDefined()
+>>>>>>> Stashed changes
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch

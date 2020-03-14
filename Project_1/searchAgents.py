@@ -288,6 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.startState = (self.startingPosition, self.corners)
 
     def getStartState(self):
         """
@@ -295,14 +296,16 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
+        return self.startState
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
+        return len(state[1]) == 0
 
     def getSuccessors(self, state):
         """
@@ -325,6 +328,20 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            x, y = state[0][0], state[0][1]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            cornersLeft = state[1]
+            if (nextx, nexty) in cornersLeft:
+                for i in range(len(cornersLeft)):
+                    if cornersLeft[i] == (nextx, nexty):
+                        break
+                cornersLeft = cornersLeft[:i] + cornersLeft[i + 1:]
+            if not hitsWall:
+                nextState = ((nextx, nexty), cornersLeft)
+                cost = 1
+                successors.append((nextState, action, cost))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,7 +377,41 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    distance = 0
+    cornersLeft = list(state[1])
+    pacman = state[0]
+    closest = 0
+    cornersList = []
+    minI = 0
+    distance_to_nearest = 0
+    total = 0
+
+    if len(cornersLeft) > 0:
+        for i in range(len(cornersLeft)):
+            corner = cornersLeft[i]
+            cornersList.append(abs(pacman[0] - corner[0]) + abs(pacman[1] - corner[1]))
+        distance_to_nearest = min(cornersList)
+        minI = cornersList.index(distance_to_nearest)
+        closest = cornersLeft[minI]
+
+        cornersLeft.remove(closest)
+        while len(cornersLeft) > 0:
+            distanceList = []
+            xy1 = closest
+            for i in range(len(cornersLeft)):
+                xy2 = cornersLeft[i]
+                distanceList.append(abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1]))
+            closest2 = min(distanceList)
+            minI = distanceList.index(closest2)
+            closest = cornersLeft[minI]
+            cornersLeft.remove(closest)
+
+            total = total + closest2
+        distance = distance_to_nearest + total
+
+    return distance
+
+    #return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
