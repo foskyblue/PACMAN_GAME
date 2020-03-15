@@ -290,10 +290,7 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height - 2, self.walls.width - 2
-
-        # highlight
         self.corners = ((1, 1), (1, top), (right, 1), (right, top))
-        # highlight
 
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
