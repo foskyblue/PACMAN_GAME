@@ -280,7 +280,11 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
-        self.corners = ((1,1), (1,top), (right, 1), (right, top))
+
+        # highlight
+        self.corners = [(1,1), (1,top), (right, 1), (right, top)]
+        # highlight
+
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print('Warning: no food in corner ' + str(corner))
@@ -288,8 +292,16 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+<<<<<<< Updated upstream
         self.startState = (self.startingPosition, self.corners)
+=======
+        # adding new value that easy for getStartState to get initial and goal state
+        self.startState = (self.startingPosition, self.corners)
+        self.visualize = True
+        self._visited, self._visitedlist = {}, []
+>>>>>>> Stashed changes
 
+    # to get the startState from init
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
@@ -299,13 +311,21 @@ class CornersProblem(search.SearchProblem):
         #util.raiseNotDefined()
         return self.startState
 
+    # return whether is goal state, it's the same with the problem class above
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
         #util.raiseNotDefined()
+<<<<<<< Updated upstream
         return len(state[1]) == 0
+=======
+        isGoal = (state[1] == [])
+
+
+        return isGoal
+>>>>>>> Stashed changes
 
     def getSuccessors(self, state):
         """
@@ -328,6 +348,7 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+<<<<<<< Updated upstream
             x, y = state[0][0], state[0][1]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -343,6 +364,46 @@ class CornersProblem(search.SearchProblem):
                 cost = 1
                 successors.append((nextState, action, cost))
 
+=======
+            "*** This doc is based on the one at the bottom which is documented now ***"
+            # first, setting the x,y as not goal state, distance of x and y as dx,dy.
+            # The next step of x and y will be x + distance of itself, so will be x + dx.
+            # Importing the value conditions when pacman hit the wall.
+            # Setting the goal state name base on the question as corners.
+            # Several if else conditions to check when hitting walls, it goes to next step, and turning cost to 1
+            # and if hit the corner, it will import all current list of corners that have not been visited.
+            # remove the new position, because it count as visited now.
+            # Then update the successor list.
+            # if the position is not a corner, it will just append normally, keeping the same list for the list.
+            x, y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitWalls  = self.walls[nextx][nexty]
+            goalCorners = state[1]
+            if (nextx, nexty) in goalCorners:
+                for i in range(len(goalCorners)):
+                    if goalCorners[i] == (nextx, nexty):
+                        break
+                goalCorners = goalCorners[:i] + goalCorners[i + 1:]
+            if not hitWalls:
+                nextState = ((nextx, nexty), goalCorners)
+                cost = 1
+                successors.append((nextState, action, cost))
+
+        # Hi guys I used to choose this one, I did try to use it as the main, it is more easy to understand and use
+        #         # if the next position is a corner
+        #         if next_pos in state[1]:
+        #             # copy the current list of corners that have not been visited
+        #             next_corners = state[1][:]
+        #             # remove the new position from the list
+        #             next_corners.remove(next_pos)
+        #             # append a successor to the successor list in this format ((position, list of corners), action, 1)
+        #             successors.append(((next_pos, next_corners), action, cost))
+        #         # if the position is not a corner
+        #         else:
+        #             # just append normally, keeping the same list of corners
+        #             successors.append(((next_pos, state[1]), action, cost))
+>>>>>>> Stashed changes
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -358,6 +419,9 @@ class CornersProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
+
+
+manhattan = lambda x1, y1, x2, y2: abs(x1 - x2) + abs(y1 - y2)
 
 
 def cornersHeuristic(state, problem):
@@ -377,6 +441,7 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+<<<<<<< Updated upstream
     distance = 0
     cornersLeft = list(state[1])
     pacman = state[0]
@@ -412,6 +477,37 @@ def cornersHeuristic(state, problem):
     return distance
 
     #return 0 # Default to trivial solution
+=======
+    "***This need to have some change***"
+    # as I not very familar with python.... I don't know why this part of code need to change
+    # line 285 self.corners. need to change the () to []
+    # (original)self.corners = ((1,1), (1,top), (right, 1), (right, top)) >>>
+    # (changed)self.corners = [(1,1), (1,top), (right, 1), (right, top)]
+
+    #return 0 # Default to trivial solution
+
+    # with the heuristic, it should be using the manhattan distance algorithm which teach in the class.
+    # first, corners as all the coordinates at the corner, wall frame from problem,
+    # heuristic counts seted for further counting, and a manhattan method with lambda
+    # after the setting for the values, doing a while roop with if corners are still not visit all
+    # try to run manhattan method to find least distance for the result
+    hCount = 0
+    allCorners = state[1][:]
+    cornersList = list(state[1])
+    reference = state[0]
+    while allCorners != []:
+        x2, y2 = reference
+        distances = []
+
+        for x1, y1 in allCorners:
+            distances.append(manhattan(x1, y1, x2, y2))
+
+        hCount += min(distances)
+        reference = allCorners[distances.index(min(distances))]
+        allCorners.remove(reference)
+    return hCount
+
+>>>>>>> Stashed changes
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
