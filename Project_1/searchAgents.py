@@ -292,14 +292,14 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-<<<<<<< Updated upstream
+
         self.startState = (self.startingPosition, self.corners)
-=======
+
         # adding new value that easy for getStartState to get initial and goal state
         self.startState = (self.startingPosition, self.corners)
         self.visualize = True
         self._visited, self._visitedlist = {}, []
->>>>>>> Stashed changes
+
 
     # to get the startState from init
     def getStartState(self):
@@ -318,14 +318,14 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         #util.raiseNotDefined()
-<<<<<<< Updated upstream
+
         return len(state[1]) == 0
-=======
+
         isGoal = (state[1] == [])
 
 
         return isGoal
->>>>>>> Stashed changes
+
 
     def getSuccessors(self, state):
         """
@@ -348,7 +348,6 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-<<<<<<< Updated upstream
             x, y = state[0][0], state[0][1]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -364,7 +363,6 @@ class CornersProblem(search.SearchProblem):
                 cost = 1
                 successors.append((nextState, action, cost))
 
-=======
             "*** This doc is based on the one at the bottom which is documented now ***"
             # first, setting the x,y as not goal state, distance of x and y as dx,dy.
             # The next step of x and y will be x + distance of itself, so will be x + dx.
@@ -403,7 +401,7 @@ class CornersProblem(search.SearchProblem):
         #         else:
         #             # just append normally, keeping the same list of corners
         #             successors.append(((next_pos, state[1]), action, cost))
->>>>>>> Stashed changes
+
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -441,7 +439,6 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-<<<<<<< Updated upstream
     distance = 0
     cornersLeft = list(state[1])
     pacman = state[0]
@@ -477,7 +474,6 @@ def cornersHeuristic(state, problem):
     return distance
 
     #return 0 # Default to trivial solution
-=======
     "***This need to have some change***"
     # as I not very familar with python.... I don't know why this part of code need to change
     # line 285 self.corners. need to change the () to []
@@ -507,7 +503,6 @@ def cornersHeuristic(state, problem):
         allCorners.remove(reference)
     return hCount
 
->>>>>>> Stashed changes
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
