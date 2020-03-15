@@ -439,42 +439,43 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    distance = 0
-    cornersLeft = list(state[1])
-    pacman = state[0]
-    closest = 0
-    cornersList = []
-    minI = 0
-    distance_to_nearest = 0
-    total = 0
-
-    if len(cornersLeft) > 0:
-        for i in range(len(cornersLeft)):
-            corner = cornersLeft[i]
-            cornersList.append(abs(pacman[0] - corner[0]) + abs(pacman[1] - corner[1]))
-        distance_to_nearest = min(cornersList)
-        minI = cornersList.index(distance_to_nearest)
-        closest = cornersLeft[minI]
-
-        cornersLeft.remove(closest)
-        while len(cornersLeft) > 0:
-            distanceList = []
-            xy1 = closest
-            for i in range(len(cornersLeft)):
-                xy2 = cornersLeft[i]
-                distanceList.append(abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1]))
-            closest2 = min(distanceList)
-            minI = distanceList.index(closest2)
-            closest = cornersLeft[minI]
-            cornersLeft.remove(closest)
-
-            total = total + closest2
-        distance = distance_to_nearest + total
-
-    return distance
+    "***This is the code that can use for the (original)self.corners = ((1,1), (1,top), (right, 1), (right, top))***"
+    # distance = 0
+    # cornersLeft = list(state[1])
+    # pacman = state[0]
+    # closest = 0
+    # cornersList = []
+    # minI = 0
+    # distance_to_nearest = 0
+    # total = 0
+    #
+    # if len(cornersLeft) > 0:
+    #     for i in range(len(cornersLeft)):
+    #         corner = cornersLeft[i]
+    #         cornersList.append(abs(pacman[0] - corner[0]) + abs(pacman[1] - corner[1]))
+    #     distance_to_nearest = min(cornersList)
+    #     minI = cornersList.index(distance_to_nearest)
+    #     closest = cornersLeft[minI]
+    #
+    #     cornersLeft.remove(closest)
+    #     while len(cornersLeft) > 0:
+    #         distanceList = []
+    #         xy1 = closest
+    #         for i in range(len(cornersLeft)):
+    #             xy2 = cornersLeft[i]
+    #             distanceList.append(abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1]))
+    #         closest2 = min(distanceList)
+    #         minI = distanceList.index(closest2)
+    #         closest = cornersLeft[minI]
+    #         cornersLeft.remove(closest)
+    #
+    #         total = total + closest2
+    #     distance = distance_to_nearest + total
+    #
+    # return distance
 
     #return 0 # Default to trivial solution
-    "***This need to have some change***"
+    "***This is the problem that need to solve***"
     # as I not very familar with python.... I don't know why this part of code need to change
     # line 285 self.corners. need to change the () to []
     # (original)self.corners = ((1,1), (1,top), (right, 1), (right, top)) >>>
