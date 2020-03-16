@@ -354,11 +354,13 @@ class CornersProblem(search.SearchProblem):
             next_step = (nextx, nexty)
             hit_wall = self.walls[nextx][nexty]
             goal_corners = state[1]
+
             if next_step in goal_corners:
                 for i in range(len(goal_corners)):
                     if goal_corners[i] == next_step:
                         break
                 goal_corners = goal_corners[:i] + goal_corners[i + 1:]
+
             if not hit_wall:
                 next_state = (next_step, goal_corners)
                 cost = 1
@@ -405,36 +407,36 @@ def cornersHeuristic(state, problem):
     # after sorting, do another loop using closest list to find the nearest corner, after find out, remove from the list
     # , because the pacman visited it.
     # sum the distance moved, and later on add it with the first loop above to get the total heuristic counts.
-    h_distance = 0
+    h_cost = 0
     corners_list = list(state[1])
     pacman_place = state[0]
     cornersList = []
-    sum = 0
 
     if len(corners_list) > 0:
         for i in range(len(corners_list)):
             corner = corners_list[i]
-            cornersList.append(abs(pacman_place[0] - corner[0]) + abs(pacman_place[1] - corner[1]))
-        distance_to_nearest = min(cornersList)
-        index_min = cornersList.index(distance_to_nearest)
+            manhattan = abs(pacman_place[0] - corner[0]) + abs(pacman_place[1] - corner[1])
+            cornersList.append(manhattan)
+        nearest = min(cornersList)
+        index_min = cornersList.index(nearest)
         closest_list = corners_list[index_min]
         corners_list.remove(closest_list)
 
         while len(corners_list) > 0:
             distance_list = []
-            xy1 = closest_list
+            current_corners = closest_list
             for i in range(len(corners_list)):
-                xy2 = corners_list[i]
-                distance_list.append(abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1]))
+                target_corners = corners_list[i]
+                distance_list.append(abs(current_corners[0] - target_corners[0]) + abs(current_corners[1] - target_corners[1]))
             cur_min = min(distance_list)
             index_min = distance_list.index(cur_min)
             closest_list = corners_list[index_min]
             corners_list.remove(closest_list)
-            sum = sum + cur_min
+            h_cost += cur_min
 
-        h_distance = distance_to_nearest + sum
+        h_cost += nearest
 
-    return h_distance
+    return h_cost
 
     # return 0 # Default to trivial solution
 
