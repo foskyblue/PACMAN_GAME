@@ -543,11 +543,9 @@ def foodHeuristic(state, problem):
     # maintain another list called distanceList, this list is to maintain 
     # distance from current pacman position to all the dots.
     # recursively search for all dots in List:
-    # if it is 
-    #
-    #
-    #
-    #
+    #   record the distance from pacman to dot
+    #   if key already exist, then use the one which is already recorded.
+    # by end of recursive search, return distanceList that covers most of the dots.
     
     foods = foodGrid.asList()
 
@@ -555,9 +553,8 @@ def foodHeuristic(state, problem):
         return 0
 
     distanceList = []
-    # Get all food's maze distance from current position
+
     for food in foods:
-        # For efficiency, pacman may walk though an old state
         key = position + food + (0,0)
         #print(key)
         if key in problem.heuristicInfo.keys():
