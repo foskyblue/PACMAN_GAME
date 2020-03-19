@@ -74,9 +74,9 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 ########################################################################################################################
-#   With suggests in the documents and also what we studied for the algorithms of several search functions, we decided
-# to extract a main method for all other search methods. For the better reuse and understandability.
-#   Method description: With the format information of problem.getStartState() == (5,5),
+# With suggestion in the documents and also what we studied for the algorithms of several search functions, we decided
+# to extract a main method from bfs and dfs. For the better reuse and understandability.
+# Method description: With the format information of problem.getStartState() == (5,5),
 # problem.isGoalState(problem.getStartState()) == False, and problem.getSuccessors(problem.getStartState()) ==
 # [((5, 4), 'South', 1), ((4, 5), 'West', 1)]
 # path_to_goal == ['West', 'West', 'West', 'West', 'South', 'South', 'East', 'South', 'South', 'West']
