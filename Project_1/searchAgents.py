@@ -290,7 +290,10 @@ class CornersProblem(search.SearchProblem):
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height - 2, self.walls.width - 2
-        self.corners = ((1, 1), (1, top), (right, 1), (right, top))
+        # We decided to make some changes here, because the orignal code is using (), in this way, we can not change the
+        # data for self.corners. So, we decided to change into list [], it will make the further code more easy to code,
+        # understand, modify, and reuse.
+        self.corners = [(1, 1), (1, top), (right, 1), (right, top)]
 
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
@@ -333,6 +336,7 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -342,29 +346,28 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            # setting x,y as state[0](current position), as the findings in the code, distance of x and y will be using
-            # Actions.directionToVector(action) to find next direction.
-            # setting next step of x and y, and also the hit walls value.
-            # if next step is goal corners, run a loop to check, if it is, break the loop and update the goal_corners
-            # with the next step,([:i] means all goals of the current next step goal, and because add in, [i+1:])           please chaeck this line, not too familar with this kind of code
-            # checking if the next hit the wall or not, and if not, update the information with successors
+            # Setting x,y as state[0](current position, where pacman is), as the findings in the code, distance of
+            # x and y will be using Actions.directionToVector(action) to find next direction.
+            # Setting next step of x and y, and also the hit walls value.
+            # If pacman not hitting the wall, and if pacman's next step also at one of the goal corners,
+            # get value of not yet visited corners from a list and remove the current corners that pacman visited.
+            # After the removing, update the data of successors, and if not at the goal corner, just update information.
             x, y = state[0]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             next_step = (nextx, nexty)
             hit_wall = self.walls[nextx][nexty]
             goal_corners = state[1]
-
-            if next_step in goal_corners:
-                for i in range(len(goal_corners)):
-                    if goal_corners[i] == next_step:
-                        break
-                goal_corners = goal_corners[:i] + goal_corners[i + 1:]
-
+            cost = 1
             if not hit_wall:
-                next_state = (next_step, goal_corners)
-                cost = 1
-                successors.append((next_state, action, cost))
+
+                if next_step in goal_corners:
+                    not_visited_corners = state[1][:]
+                    not_visited_corners.remove(next_step)
+                    successors.append(((next_step, not_visited_corners), action, cost))
+
+                else:
+                    successors.append(((next_step, goal_corners), action, cost))
 
         self._expanded += 1  # DO NOT CHANGE
         return successors
@@ -400,41 +403,29 @@ def cornersHeuristic(state, problem):
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    # first, setting all values that will use later, heuristic cost count, all corner list, current state, visit list,
-    # and the sum of distance.
-    # if not finding all corners, do the for loop, find first corner in corner list, compute the Manhattan distance,
-    # find the nearest corner to current pacman state(place), and build a list with closest corner.
-    # after sorting, do another loop using closest list to find the nearest corner, after find out, remove from the list
-    # , because the pacman visited it.
-    # sum the distance moved, and later on add it with the first loop above to get the total heuristic counts.
+    # setting values:
+    # h_cost = heuristic cost, corners_list = list of all goal corners, pacman_place = current pacman place,
+    # manhattan = manhattan distance(nearly same with manhattanHeuristic, but input is a little different, so we made a
+    # new one)
+    # While corner_list not empty, get current pacman place x and y, and a distance list for current pacman.
+    # Do a loop for finding all not yet visited corners to find the distance to the current pacman place with manhattan
+    # distance algorithm and add it to distance list.
+    # Sum the minimum value of the distance list into the h_cost, update the current pacman place and remove the current
+    # place in the nonvisited_corner_list to count as visited. last, return the heuristic cost value.
     h_cost = 0
-    corners_list = list(state[1])
+    nonvisited_corners_list = state[1][:]
     pacman_place = state[0]
-    cornersList = []
+    manhattan = lambda x1, y1, x2, y2: abs(x1 - x2) + abs(y1 - y2)
 
-    if len(corners_list) > 0:
-        for i in range(len(corners_list)):
-            corner = corners_list[i]
-            manhattan = abs(pacman_place[0] - corner[0]) + abs(pacman_place[1] - corner[1])
-            cornersList.append(manhattan)
-        nearest = min(cornersList)
-        index_min = cornersList.index(nearest)
-        closest_list = corners_list[index_min]
-        corners_list.remove(closest_list)
+    while len(nonvisited_corners_list) > 0:
+        pacman_x, pacman_y = pacman_place
+        distance_list = []
 
-        while len(corners_list) > 0:
-            distance_list = []
-            current_corners = closest_list
-            for i in range(len(corners_list)):
-                target_corners = corners_list[i]
-                distance_list.append(abs(current_corners[0] - target_corners[0]) + abs(current_corners[1] - target_corners[1]))
-            cur_min = min(distance_list)
-            index_min = distance_list.index(cur_min)
-            closest_list = corners_list[index_min]
-            corners_list.remove(closest_list)
-            h_cost += cur_min
-
-        h_cost += nearest
+        for corner_x,corner_y in nonvisited_corners_list:
+            distance_list.append(manhattan(corner_x,corner_y,pacman_x,pacman_y))
+        h_cost += min(distance_list)
+        pacman_place = nonvisited_corners_list[distance_list.index(min(distance_list))]
+        nonvisited_corners_list.remove(pacman_place)
 
     return h_cost
 

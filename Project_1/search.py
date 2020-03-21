@@ -97,7 +97,6 @@ def graphFindPath(problem, algorithm):
     while not algorithm.isEmpty():
         path = algorithm.pop()
         current_state = path[-1][0]
-
         if problem.isGoalState(current_state):
             path_to_goal = []
             for x in path:
@@ -205,7 +204,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     cost = 0
     while not algorithm.isEmpty():
         path, actions = algorithm.pop()
-
         if problem.isGoalState(path):
             return actions
 
