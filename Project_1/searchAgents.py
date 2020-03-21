@@ -545,7 +545,7 @@ def foodHeuristic(state, problem):
     # recursively search for all dots in List:
     #   record the distance from pacman to dot
     #   if key already exist, then use the one which is already recorded.
-    # by end of recursive search, return distanceList that covers most of the dots.
+    # by end of recursive search, return distanceList that covers most of the dots.(but in a value)
     
     foods = foodGrid.asList()
 
@@ -556,7 +556,7 @@ def foodHeuristic(state, problem):
 
     for food in foods:
         key = position + food + (0,0)
-        #print(key)
+        #print('#', key)
         if key in problem.heuristicInfo.keys():
             distance = problem.heuristicInfo[key]
         else:
@@ -600,7 +600,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        # basically, it is fine using any of the search algorithm.
+        # basically, it is fine using any of the search algorithm.(ucs, a*)
         # here choose bfs as the solution, since it is the most intuitive one
         # for getting a 'closest' dot.
         
