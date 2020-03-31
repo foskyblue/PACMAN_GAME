@@ -74,6 +74,7 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 ########################################################################################################################
+
 #   With suggests in the documents and also what we studied for the algorithms of several search functions, we decided
 # to extract a main method for all other search methods. For the better reuse and understandability.
 #   Method description: With the format information of problem.getStartState() == (5,5),
@@ -97,6 +98,7 @@ def graphFindPath(problem, algorithm):
     while not algorithm.isEmpty():
         path = algorithm.pop()
         current_state = path[-1][0]
+
         if problem.isGoalState(current_state):
             path_to_goal = []
             for x in path:
@@ -204,6 +206,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     cost = 0
     while not algorithm.isEmpty():
         path, actions = algorithm.pop()
+
         if problem.isGoalState(path):
             return actions
 
