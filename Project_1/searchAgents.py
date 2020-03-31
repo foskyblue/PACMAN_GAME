@@ -406,7 +406,7 @@ def cornersHeuristic(state, problem):
     # setting values:
     # h_cost = heuristic cost, corners_list = list of all goal corners, pacman_place = current pacman place,
     # manhattan = manhattan distance(nearly same with manhattanHeuristic, but input is a little different, so we made a
-    # new one)
+    # new one -- which is return value instead of state.)
     # While corner_list not empty, get current pacman place x and y, and a distance list for current pacman.
     # Do a loop for finding all not yet visited corners to find the distance to the current pacman place with manhattan
     # distance algorithm and add it to distance list.
@@ -535,11 +535,11 @@ def foodHeuristic(state, problem):
     # distance from current pacman position to all the dots.
     # recursively search for all dots in List:
     #   record the distance from pacman to dot
-    #   if key already exist, then use the one which is already recorded.
+    #   if key(project builder already provided a method of maintain all keys) already exist, then use the one which is already recorded.
     # by end of recursive search, return distanceList that covers most of the dots.(but in a value)
  
     
-    foods = foodGrid.asList()
+    foods = foodGrid.asList()   #get all the foods as in a List
 
     if not foods:
         return 0
@@ -547,12 +547,12 @@ def foodHeuristic(state, problem):
     distanceList = []
 
     for food in foods:
-        key = position + food + (0,0)
+        key = position + food + (0,0)               # (3,5,1,1,0,0) is a unique key for eg.
         #print('#', key)
-        if key in problem.heuristicInfo.keys():
-            distance = problem.heuristicInfo[key]
+        if key in problem.heuristicInfo.keys():     # structure used by given to store keys.
+            distance = problem.heuristicInfo[key]   # this contributes most to save calc. time
         else:
-            distance = mazeDistance(position, food, problem.startingGameState)
+            distance = mazeDistance(position, food, problem.startingGameState)  # calc. distance by given func.
             problem.heuristicInfo[key] = distance
         distanceList.append(distance)
 
@@ -562,7 +562,8 @@ def foodHeuristic(state, problem):
     max(distanceList)+print(randint(1,3))
     sum(distanceList)
     '''
-    return (max(distanceList))
+    return (max(distanceList))                      # a simple heuritic is to return the "worst case" to eat the farest dot.
+                                                    # so the system can estimate whether it is a good choice or not(with consistency).
     
 
 '''

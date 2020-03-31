@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3b158ee1-0342-4ae9-85c9-16c32d5665d9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/search.py" beforeDir="false" afterPath="$PROJECT_DIR$/search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/searchAgents.py" beforeDir="false" afterPath="$PROJECT_DIR$/searchAgents.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,10 +44,11 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="461" y="310" key="com.intellij.ide.util.TipDialog" timestamp="1584215578086">
-      <screen x="0" y="0" width="1504" height="963" />
+    <state x="589" y="335" key="com.intellij.ide.util.TipDialog" timestamp="1585623703816">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="310" key="com.intellij.ide.util.TipDialog/0.0.1504.963@0.0.1504.963" timestamp="1584215578086" />
+    <state x="589" y="335" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585623703816" />
     <state x="415" y="206" width="672" height="678" key="search.everywhere.popup" timestamp="1583613599011">
       <screen x="0" y="0" width="1504" height="963" />
     </state>
