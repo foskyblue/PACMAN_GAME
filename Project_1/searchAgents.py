@@ -546,6 +546,7 @@ def foodHeuristic(state, problem):
     #   record the distance from pacman to dot
     #   if key already exist, then use the one which is already recorded.
     # by end of recursive search, return distanceList that covers most of the dots.(but in a value)
+ 
     
     foods = foodGrid.asList()
 
@@ -565,8 +566,41 @@ def foodHeuristic(state, problem):
         distanceList.append(distance)
 
     # Return max food distance as heuristic
-    #print("@ " , distanceList)
-    return max(distanceList)
+    print("@ " , distanceList)
+    '''
+    max(distanceList)+print(randint(1,3))
+    sum(distanceList)
+    '''
+    return (max(distanceList))
+    
+
+'''
+    maximum=-1
+    maxdot=position
+    for food in foodGrid.asList():
+        distance=abs(position[0]-food[0])+abs(position[1]-food[1])
+        if(distance>maximum):
+            maximum=distance
+            maxdot=food
+    dim=position[0]-maxdot[0]
+
+    foodCount=0
+    for food in foodGrid.asList():
+        if dim>0:
+            if (position[0]-food[0])<0 :
+                foodCount+=1
+        elif dim<0:
+            if (position[0]-food[0])>0 :
+                foodCount+=1
+        else:
+            if (position[0]-food[0])!=0 :
+                foodCount+=1
+    
+    if maximum < 0:
+        maximum = 0
+
+    return maximum + foodCount
+'''
     
 
 
