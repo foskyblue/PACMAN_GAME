@@ -530,7 +530,69 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    # get list of food coordinates as List.
+    # maintain another list called distanceList, this list is to maintain 
+    # distance from current pacman position to all the dots.
+    # recursively search for all dots in List:
+    #   record the distance from pacman to dot
+    #   if key already exist, then use the one which is already recorded.
+    # by end of recursive search, return distanceList that covers most of the dots.(but in a value)
+ 
+    
+    foods = foodGrid.asList()
+
+    if not foods:
+        return 0
+
+    distanceList = []
+
+    for food in foods:
+        key = position + food + (0,0)
+        #print('#', key)
+        if key in problem.heuristicInfo.keys():
+            distance = problem.heuristicInfo[key]
+        else:
+            distance = mazeDistance(position, food, problem.startingGameState)
+            problem.heuristicInfo[key] = distance
+        distanceList.append(distance)
+
+    # Return max food distance as heuristic
+    print("@ " , distanceList)
+    '''
+    max(distanceList)+print(randint(1,3))
+    sum(distanceList)
+    '''
+    return (max(distanceList))
+    
+
+'''
+    maximum=-1
+    maxdot=position
+    for food in foodGrid.asList():
+        distance=abs(position[0]-food[0])+abs(position[1]-food[1])
+        if(distance>maximum):
+            maximum=distance
+            maxdot=food
+    dim=position[0]-maxdot[0]
+
+    foodCount=0
+    for food in foodGrid.asList():
+        if dim>0:
+            if (position[0]-food[0])<0 :
+                foodCount+=1
+        elif dim<0:
+            if (position[0]-food[0])>0 :
+                foodCount+=1
+        else:
+            if (position[0]-food[0])!=0 :
+                foodCount+=1
+    
+    if maximum < 0:
+        maximum = 0
+
+    return maximum + foodCount
+'''
+    
 
 
 class ClosestDotSearchAgent(SearchAgent):
@@ -563,7 +625,12 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # basically, it is fine using any of the search algorithm.(ucs, a*)
+        # here choose bfs as the solution, since it is the most intuitive one
+        # for getting a 'closest' dot.
+        
+        return search.bfs(problem)
+        #util.raiseNotDefined()
 
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -600,7 +667,9 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x, y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        foodList = self.food.asList()
+        return state in foodList
+        # util.raiseNotDefined()
 
 
 def mazeDistance(point1, point2, gameState):
