@@ -92,32 +92,32 @@ def tinyMazeSearch(problem):
 ########################################################################################################################
 def graphFindPath(problem, algorithm):
 
-    algorithm.push([(problem.getStartState(), "", 0)])
-    visited_states = []
+    algorithm.push([(problem.getStartState(), "", 0)]) # push the start state of the pacman into data structure of algorithm e.g Stack
+    visited_states = [] # create an empty list to keep track of visited states
 
-    while not algorithm.isEmpty():
-        path = algorithm.pop()
-        current_state = path[-1][0]
+    while not algorithm.isEmpty(): # execute block of code until data structure containing states not visited by pacman is empty
+        path = algorithm.pop() # pop a state from the data structure containing states of pacman
+        current_state = path[-1][0] # get current state of pacman
 
-        if problem.isGoalState(current_state):
-            path_to_goal = []
-            for x in path:
-                if len(x[1]) != 0:
-                    path_to_goal.append(x[1])
-            print('path_to_goal', path_to_goal)
-            return path_to_goal
+        if problem.isGoalState(current_state): # check if current state of pacman is the goal state
+            path_to_goal = [] # if current state is the goal state then create an empty list to get all paths to the current state which is the goal
+            for x in path: # for loop to get all paths to goal
+                if len(x[1]) != 0: # this line helps ignore the first path to goal which is empty " " by default
+                    path_to_goal.append(x[1]) # add state {e.g. (4, 5)} to path_to_goal list
+            print('path_to_goal', path_to_goal) # display path to goal state
+            return path_to_goal # return list containing path to goal state
 
-        else:
-            if current_state not in visited_states:
-                visited_states.append(current_state)
+        else: # from line 102, if current state is not the goal state
+            if current_state not in visited_states: # check if current state does not exist in list containing visited states
+                visited_states.append(current_state) # add current state into list of visited states
 
-                for successor in problem.getSuccessors(current_state):
-                    if successor[0] not in visited_states:
-                        successorPath = path[:]
-                        successorPath.append(successor)
-                        algorithm.push(successorPath)
+                for successor in problem.getSuccessors(current_state): # loop through all successors of current state
+                    if successor[0] not in visited_states: # check if state {e.g.(4, 5)} is in visited
+                        successorPath = path[:] # assign path to successorPath list
+                        successorPath.append(successor) # append successor into successorPath list
+                        algorithm.push(successorPath) # push successor into data structure of algorithm e.g. Stack
 
-    return (problem, algorithm)
+    return problem, algorithm # return initial state of pacman and data structure of algorithm
 
 
 # As we studied the util.py, we find that several methods are related to the search algorithms.
@@ -138,8 +138,8 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    stack = util.Stack()
-    return graphFindPath(problem, stack)
+    stack = util.Stack() # create a Stack object
+    return graphFindPath(problem, stack) # call and return result of utility function
 
 # As we studied the util.py, we find that several methods are related to the search algorithms.
 # We choose the Queue function which using the first-in-first-out logic for DFS.
@@ -148,9 +148,9 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
-    queue = util.Queue()
+    queue = util.Queue() # create a Queue object
 
-    return graphFindPath(problem, queue)
+    return graphFindPath(problem, queue) # call and return result of utility function
 
 
 # AS some parts of the condition of input changed from the graphFindPath, we decided to implement the function first
@@ -163,26 +163,26 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
 
-    visited_states = []
-    algorithm = util.PriorityQueue()
-    algorithm.push((problem.getStartState(), []), 0)
+    visited_states = [] # create an empty list to keep track of visited states
+    algorithm = util.PriorityQueue() # create an empty priorityQueue for pacman states
+    algorithm.push((problem.getStartState(), []), 0) # push the start state of the pacman into priorityQueue
     cost = 0
-    while not algorithm.isEmpty():
-        path,actions = algorithm.pop()
+    while not algorithm.isEmpty(): # execute block of code until data structure containing states not visited by pacman is empty
+        path, actions = algorithm.pop() # pop priorityQueue and place place values in path and actions
 
-        if problem.isGoalState(path):
-            return actions
+        if problem.isGoalState(path): # check if current state is the goal state
+            return actions # return actions to goal {e.g. North, South, North, East}
 
-        else:
-            if path not in visited_states:
-                visited_states.append(path)
+        else: # else from 173, if current state is not goal state
+            if path not in visited_states: # check if current state is visited
+                visited_states.append(path) # if not visited then add to visited list
 
-                for successor in problem.getSuccessors(path):
-                    if successor[0] not in visited_states:
-                        directions = successor[1]
-                        cost = actions + [directions]
-                        algorithm.push((successor[0],cost),problem.getCostOfActions(cost))
-    return actions
+                for successor in problem.getSuccessors(path): # loop through all successors of current state
+                    if successor[0] not in visited_states: # check if state {e.g.(4, 5)} is in visited
+                        directions = successor[1] # assign direction to a variable
+                        cost = actions + [directions] # calculate cost of current state to its successor
+                        algorithm.push((successor[0],cost),problem.getCostOfActions(cost)) # push successor into priorityQ
+    return actions # return actions to goal {e.g. North, South, North, East}
 
 
 def nullHeuristic(state, problem=None):
@@ -200,29 +200,30 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
 
     "Search the node that has the lowest combined cost and heuristic first."
-    visited_states = []
-    algorithm = util.PriorityQueue()
-    algorithm.push((problem.getStartState(), []), nullHeuristic(problem.getStartState(), problem))
+    visited_states = [] # create an empty list to keep track of visited states
+    algorithm = util.PriorityQueue() # create an empty priorityQueue for pacman states
+    algorithm.push((problem.getStartState(), []), nullHeuristic(problem.getStartState(), problem)) # push the start state of the pacman into priorityQueue
     cost = 0
-    while not algorithm.isEmpty():
-        path, actions = algorithm.pop()
+    while not algorithm.isEmpty(): # execute block of code until data structure containing states not visited by pacman is empty
+        path, actions = algorithm.pop() # pop priorityQueue and place place values in path and actions
 
-        if problem.isGoalState(path):
-            return actions
+        if problem.isGoalState(path): # check if current state is the goal state
+            return actions # return actions to goal {e.g. North, South, North, East}
 
-        else:
-            if path not in visited_states:
-                visited_states.append(path)
+        else: # else from 210, if current state is not goal state
+            if path not in visited_states: # check if current state is visited
+                visited_states.append(path) # if not visited then add to visited list
 
-                for successor in problem.getSuccessors(path):
-                    if successor[0] not in visited_states:
-                        directions = successor[1]
-                        cost = actions + [directions]
-                        nullCost = problem.getCostOfActions(cost) + heuristic(successor[0], problem)
-                        algorithm.push((successor[0], cost), nullCost)
+                for successor in problem.getSuccessors(path): # loop through all successors of current state
+                    if successor[0] not in visited_states: # check if state {e.g.(4, 5)} is in visited
+                        directions = successor[1] # assign direction to a variable
+                        cost = actions + [directions] # assign direction to a variable
+                        nullCost = problem.getCostOfActions(cost) + heuristic(successor[0], problem) # calculate cost and heuristic of current state to its successor
+                        algorithm.push((successor[0], cost), nullCost) # push successor into priorityQ
         visited_states.append(path)
-    return actions
+    return actions # return actions to goal {e.g. North, South, North, East}
     #util.raiseNotDefined()
+
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
