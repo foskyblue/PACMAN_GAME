@@ -179,8 +179,8 @@ def uniformCostSearch(problem):
 
                 for successor in problem.getSuccessors(path):
                     if successor[0] not in visited_states:
-                        directions = successor[1]
-                        cost = actions + [directions]
+                        directions = successor[1]                   #single direction to go
+                        cost = actions + [directions]               #the path accumulated so far = previous + single
                         algorithm.push((successor[0],cost),problem.getCostOfActions(cost))
     return actions
 
